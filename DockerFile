@@ -1,5 +1,7 @@
 FROM ubuntu
 
+
+
 RUN ARCH=$(uname -m) &&\
     apt-get update &&\
     apt-get upgrade -y &&\
@@ -7,20 +9,39 @@ RUN ARCH=$(uname -m) &&\
     mkdir /temp &&\
     wget -P /temp https://github.com/Kitware/CMake/releases/download/v3.29.7/cmake-3.29.7-linux-x86_64.sh &&\
     chmod +x /temp/cmake-3.29.7-linux-x86_64.sh &&\
-    /temp/cmake-3.29.7-linux-x86_64.sh --skip-license --prefix=/usr/local
-
-RUN wget -P /temp https://github.com/google/googletest/archive/refs/tags/v1.15.2.tar.gz &&\
-    tar -xzf /temp/v1.15.2.tar.gz -C /temp
-
-RUN cd /temp/googletest-1.15.2 &&\
+    /temp/cmake-3.29.7-linux-x86_64.sh --skip-license --prefix=/usr/local &&\
+    wget -P /temp https://github.com/google/googletest/archive/refs/tags/v1.15.2.tar.gz &&\
+    tar -xzf /temp/v1.15.2.tar.gz -C /temp &&\
+    cd /temp/googletest-1.15.2 &&\
     cmake -S . -B ./build &&\
     cd ./build &&\
     make &&\
     make install
 
-VOLUME [ "/data" ]
+RUN apt-get install openssh-server -y
 
-CMD tail -f /dev/null
+RUN systemctl enable ssh
+    
+
+VOLUME [ "/workdir" ]
+
+#ssh port
+EXPOSE 22
+
+ENV USER=""
+ENV PASSWORD=""
+ENV UID=1000
+ENV GID=1000
+
+CMD if [ -z "$UID" ]; then :; else usermod -u $UID ubuntu; fi &&\
+    if [ -z "$GID" ]; then :; else groupmod -g $GID ubuntu; fi &&\
+    if [ -z "$PASSWORD" ]; then :; else echo ubuntu:$PASSWORD|chpasswd; fi &&\
+    if [ -z "$PASSWORD" ]; then :; else echo root:$PASSWORD|chpasswd; fi &&\
+    usermod -d /workdir ubuntu &&\
+    if [ -z "$USER" ]; then :; else usermod -l $USER ubuntu; groupmod -n $USER ubuntu; fi&&\
+    unset PASSWORD &&\
+    service ssh start &&\
+    tail -f /dev/null
 
 # apt-get autoremove -y &&\
 # apt-get clean &&\
