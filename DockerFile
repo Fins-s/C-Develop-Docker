@@ -1,7 +1,5 @@
 FROM ubuntu
 
-
-
 RUN ARCH=$(uname -m) &&\
     apt-get update &&\
     apt-get upgrade -y &&\
@@ -18,7 +16,11 @@ RUN ARCH=$(uname -m) &&\
     make &&\
     make install &&\
     cd / &&\
-    systemctl enable ssh
+    systemctl enable ssh &&\
+    rm -rf /temp &&\
+    apt-get remove -y wget &&\
+    apt-get autoremove -y &&\
+    apt-get clean
 
 VOLUME [ "/workdir" ]
 
