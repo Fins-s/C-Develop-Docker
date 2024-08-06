@@ -3,7 +3,7 @@ FROM ubuntu
 RUN ARCH=$(uname -m) &&\
     apt-get update &&\
     apt-get upgrade -y &&\
-    apt-get install -y wget gcc g++ make openssh-server &&\
+    apt-get install -y wget gcc g++ make openssh-server git &&\
     mkdir /temp &&\
     wget -P /temp https://github.com/Kitware/CMake/releases/download/v3.29.7/cmake-3.29.7-linux-x86_64.sh &&\
     chmod +x /temp/cmake-3.29.7-linux-x86_64.sh &&\
@@ -20,7 +20,7 @@ RUN ARCH=$(uname -m) &&\
     rm -rf /temp &&\
     apt-get clean
 
-VOLUME [ "/workdir" ]
+VOLUME [ "/config" ]
 
 #ssh port
 EXPOSE 22
@@ -34,8 +34,8 @@ CMD if [ -z "$UID" ]; then :; else usermod -u $UID ubuntu; fi &&\
     if [ -z "$GID" ]; then :; else groupmod -g $GID ubuntu; fi &&\
     if [ -z "$PASSWORD" ]; then :; else echo ubuntu:$PASSWORD|chpasswd; fi &&\
     if [ -z "$PASSWORD" ]; then :; else echo root:$PASSWORD|chpasswd; fi &&\
-    usermod -d /workdir ubuntu &&\
-    chown -R ubuntu:ubuntu /workdir &&\
+    usermod -d /config ubuntu &&\
+    chown -R ubuntu:ubuntu /config &&\
     if [ -z "$USER" ]; then :; else usermod -l $USER ubuntu; groupmod -n $USER ubuntu; fi&&\
     unset PASSWORD &&\
     service ssh start &&\
