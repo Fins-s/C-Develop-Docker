@@ -1,1 +1,1 @@
-docker run --cpus="0" --memory="0" --cpu-shares=1024 -p 30000:22 -e USER=chenfeng -e PASSWORD=123 -e UID=1001 -e GID=1001 -v D:\Work\F:/workdir developdocker:latest
+docker run -d --cpus="0" --memory="0" --cpu-shares=1024 -p 31001:22 -e USER=chenfeng -e PASSWORD=123 -e UID=1001 -e GID=1001 -v D:\Work\DockerHome:/workdir c-develop-docker:latest
