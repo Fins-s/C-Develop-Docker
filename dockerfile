@@ -1,4 +1,4 @@
-FROM linuxserver/code-server
+FROM linuxserver/code-server:latest
 
 ARG CMKAE_VERSION=3.29.7
 ARG GTEST_VERSION=1.15.2
@@ -27,6 +27,6 @@ RUN ARCH=$(uname -m) &&\
 
 # apt-get autoremove -y &&\
 
-# build: docker build -t finsss/c-develop-docker:latest .
+# build: docker buildx build -t finsss/llvm-develop-docker:latest .
 # deploy: docker-compose up -d
 # push: docker push finsss/c-develop-docker:latest 
