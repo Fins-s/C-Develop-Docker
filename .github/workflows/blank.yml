@@ -24,8 +24,8 @@ jobs:
         name: Set Docker Image Tag
         id: set_tag
         run: |
-          # Format the timestamp as YYYYMMDDHHMMSS
-          TIMESTAMP=$(date -u -d "${{ github.run_started_at }}" +"%Y%m%d%H%M%S")
+          # Get the current system time in UTC and format it as YYYYMMDDHHMMSS
+          TIMESTAMP=$(date -u +"%Y%m%d%H%M%S")
           echo "docker_image_tag=$TIMESTAMP" >> $GITHUB_OUTPUT
       -
         name: Build and push
