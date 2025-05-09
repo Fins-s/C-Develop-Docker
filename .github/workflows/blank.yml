@@ -2,6 +2,7 @@ name: ci
 
 on:
   push:
+  workflow_dispatch:
 
 jobs:
   docker:
@@ -20,8 +21,15 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       -
+        name: Set Docker Image Tag
+        id: set_tag
+        run: |
+          # Format the timestamp as YYYYMMDDHHMMSS
+          TIMESTAMP=$(date -d "${{ github.run_started_at }}" +"%Y%m%d%H%M%S")
+          echo "docker_image_tag=$TIMESTAMP" >> $GITHUB_OUTPUT
+      -
         name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: finsss/c-develop-docker:auto
+          tags: finsss/c-develop-docker:${{ steps.set_tag.outputs.docker_image_tag }}
